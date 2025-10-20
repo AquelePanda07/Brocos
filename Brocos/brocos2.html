@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="jquery-3.7.1.min.js"></script>
+    <Script src=";/js/script.js" defer>
+    </Script>
+
+    <title>Brocos Queblados 2 players</title>
+    <style>
+        body {
+            background-color: rgb(0, 0, 0);
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+        }
+        
+        p {
+            color: white;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<h1> BROCOS </h1>
+<p> QUEBLADOS</p>
+
+<div class="game-container">
+    <div class="game-board" id="Jogador 1">
+        <div class="barra" id="barra1"></div>
+        <div class="bola" id="bola1"></div>
+    </div>
+    <div class="game-board" id="Jogador 2">
+        <div class="barra" id="barra2"></div>
+        <div class="bola" id="bola2"></div>
+    </div>
+</div>
+
+<script>
+    function criarJogo(boardId, barraId, bolaId, controles) {
+        const board = document.getElementById(boardId);
+        const barra = document.getElementById(barraId);
+        const bola = document.getElementById(bolaId);
+
+        let bolaX = 194;
+        let bolaY = 450;
+        let velocidadeX = 3;
+        let velocidadeY = -3;
+        let barraX = 150;
+        const barraLargura = 100;
+
+        const linhas = 3;
+        const colunas = 9;
+        const blocoLargura = 75;
+        const blocoAltura = 50;
+        const espacamento = 5;
+        const blocos = [];
+
+        const larguraTotal = colunas * blocoLargura + (colunas - 1) * espacamento;
+        const inicioX = (board.clientWidth - larguraTotal) / 2;
+        const inicioY = 25;
+
+        // Criar blocos
+        for (let l = 0; l < linhas; l++) {
+            for (let c = 0; c < colunas; c++) {
+                const bloco = document.createElement('div');
+                bloco.classList.add('bloco');
+                bloco.style.position = 'absolute';
+                bloco.style.left = inicioX + c * (blocoLargura + espacamento) + 'px';
+                bloco.style.top = inicioY + l * (blocoAltura + espacamento) + 'px';
+                bloco.style.width = blocoLargura + 'px';
+                bloco.style.height = blocoAltura + 'px';
+                bloco.style.bordercolor = ['#ffffff'];
+                bloco.style.backgroundColor = ['#fffff'][l % 3];
+                board.appendChild(bloco);
+                blocos.push(bloco);
+            }
+        }
+        let teclaEsquerda = false;
+        let teclaDireita = false;
+        const velocidadeBarra = 6;
+
+        // Controle
+        document.addEventListener('keydown', (e) => {
+            if (e.key === controles.esq) teclaEsquerda = true;
+            if (e.key === controles.dir) teclaDireita = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === controles.esq) teclaEsquerda = false;
+            if (e.key === controles.dir) teclaDireita = false;
+        });
+
+        function atualizar() {
+            if (teclaEsquerda) barraX -= velocidadeBarra;
+            if (teclaDireita) barraX += velocidadeBarra;
+
+            barraX = Math.max(0, Math.min(board.clientWidth - barraLargura, barraX));
+            barra.style.left = barraX + 'px';
+
+            bolaX += velocidadeX;
+            bolaY += velocidadeY;
+
+            // colisões com paredes
+            if (bolaX <= 0 || bolaX + 11 >= board.clientWidth) velocidadeX *= -1;
+            if (bolaY <= 0) velocidadeY *= -1;
+
+            // colisão com a barra
+            if (
+                bolaY + 13 >= board.clientHeight - 30 &&
+                bolaX + 12 > barraX &&
+                bolaX < barraX + barraLargura
+            ) {
+                velocidadeY *= -1;
+
+                const centroBarra = barraX + barraLargura / 2;
+                const distanciaCentro = (bolaX + 6) - centroBarra; // +6 porque a bola tem 12px de largura
+                velocidadeX = distanciaCentro * 0.1;
+            }
+
+            // colisão com blocos
+            for (let i = 0; i < blocos.length; i++) {
+                const b = blocos[i];
+                if (!b) continue;
+                const bx = b.offsetLeft;
+                const by = b.offsetTop;
+
+                if (bolaX + 12 > bx &&
+                    bolaX < bx + blocoLargura &&
+                    bolaY + 12 > by &&
+                    bolaY < by + blocoAltura) {
+                    b.remove();
+                    blocos[i] = null;
+                    velocidadeY *= -1;
+                    break;
+                }
+            }
+
+            // bola caiu -> jogador perde
+            if (bolaY > board.clientHeight - 1) {
+                document.getElementById("game-over-popup").style.display = "flex";
+                document.getElementById("popup-message").textContent = `O ${boardId} perdeu!`;
+            }
+
+
+            bola.style.left = bolaX + 'px';
+            bola.style.top = bolaY + 'px';
+
+
+            requestAnimationFrame(atualizar);
+        }
+
+        atualizar();
+    }
+
+    // Inicializar dois jogos lado a lado
+    criarJogo('Jogador 1', 'barra1', 'bola1', {
+        esq: 'a',
+        dir: 'd'
+    }); // Player 1
+    criarJogo('Jogador 2', 'barra2', 'bola2', {
+        esq: 'ArrowLeft',
+        dir: 'ArrowRight'
+    }); // Player 2
+</script>
+
+<div id="game-over-popup" class="popup">
+    <div class="popup-content">
+        <p id="popup-message">Você perdeu!</p>
+        <button onclick="location.reload()">Reiniciar</button>
+    </div>
+</div>
+
+
+
+
+</html>
