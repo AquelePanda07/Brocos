@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="jquery-3.7.1.min.js"></script>
+    <Script src=";/js/script.js" defer>
+    </Script>
+
+    <title>Brocos Queblados - Inicio</title>
+    <style>
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #000000, #1c1c1c);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  }
+
+  h1 {
+            color: white;
+            text-align: center;
+            font-size: 150px;
+        }
+        
+        p {
+            color: white;
+            text-align: center;
+            font-size: 150px;
+            font-weight: bold;
+        }
+
+  .btn {
+    background-color: #000000;
+    color: white;
+    border: 2px solid;
+    padding: 15px 40px;
+    margin: 10px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .btn:hover {
+    background-color: #000000;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+
+<body>
+
+  <h1>Quebra</h1>
+  <p>Blocos</p>
+
+  <button class="btn" onclick="iniciarJogo()">🎮 Iniciar Jogo</button>
+  <button class="btn" onclick="modoDoisJogadores()">2 Jogadores</button>
+  <button class="btn" onclick="creditos()">Créditos</button>
+
+<script>
+  function iniciarJogo() {
+    // Redireciona para a página do jogo normal
+    window.location.href = "brocos.html";
+  }
+
+  function modoDoisJogadores() {
+    // Redireciona para a página do modo competitivo
+    window.location.href = "brocos2.html";
+  }
+
+  function creditos() {
+    // vai para pag de creditos
+    window.location.href = "brocos2.html";
+  }
+</script>
+
+</body>

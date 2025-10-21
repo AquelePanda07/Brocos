@@ -30,17 +30,11 @@
     </style>
 </head>
 
-<div id="telaInicio">
-    <h1>🏆 Quebra-Blocos</h1>
-    <p>Destrua todos os blocos e vença!</p>
-    <button onclick="iniciar()">Iniciar Jogo</button>
-</div>
-
-<div class="game-board" id="gameBoard">
-  <div class="barra" id="barra"></div>
-  <div class="bola" id="bola"></div>
-</div>
-
+<h1>Brocos</h1>
+<p>Queblados</p>
+<br>
+<br>
+<br>
 <div class="game-container">
     <div class="game-board" id="Jogador 1">
         <div class="barra" id="barra1"></div>
@@ -53,6 +47,8 @@
 </div>
 
 <script>
+    
+
     function criarJogo(boardId, barraId, bolaId, controles) {
         const board = document.getElementById(boardId);
         const barra = document.getElementById(barraId);
@@ -183,7 +179,8 @@
 <div id="game-over-popup" class="popup">
     <div class="popup-content">
         <p id="popup-message">Você perdeu!</p>
-        <button onclick="location.reload()">Reiniciar</button>
+        <button onclick="location.reload()">Revanche</button>
+        <button onclick="location.href='Tela.html'">Tela inicial</button>
     </div>
 </div>
 
