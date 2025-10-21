@@ -5,11 +5,13 @@
 }
 
 .gameBoards {
+    display: none; /* Esconde o jogo até apertar “Iniciar” */
     position: relative;
     width: 400px;
     height: 500px;
-    background-color: #0f0f13;
-    border: 2px solid #ffffff;
+    background: #ffffff;
+    border: 2px solid #000;
+    margin: 50px auto;
     overflow: hidden;
 }
 
