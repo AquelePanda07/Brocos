@@ -10,7 +10,7 @@
     <Script src=";/js/script.js" defer>
     </Script>
 
-    <title>Brocos Queblados - 2 players</title>
+    <title>Brocos Queblados 2 players</title>
     <style>
         body {
             background-color: rgb(0, 0, 0);
@@ -40,6 +40,7 @@
         <div class="barra" id="barra1"></div>
         <div class="bola" id="bola1"></div>
     </div>
+    <h2 id="pontuacao">Pontuação: 0</h2>
     <div class="game-board" id="Jogador 2">
         <div class="barra" id="barra2"></div>
         <div class="bola" id="bola2"></div>
@@ -54,12 +55,16 @@
         const barra = document.getElementById(barraId);
         const bola = document.getElementById(bolaId);
 
-        let bolaX = 194;
+        let bolaX = 357;
         let bolaY = 450;
         let velocidadeX = 3;
         let velocidadeY = -3;
-        let barraX = 150;
+        let barraX = 325;
         const barraLargura = 100;
+
+        let animacao; // vai guardar o ID do requestAnimationFrame
+        let jogoAtivo = true; // controla se o jogo está rodando
+
 
         const linhas = 3;
         const colunas = 9;
@@ -73,24 +78,41 @@
         const inicioY = 25;
 
         // Criar blocos
-        for (let l = 0; l < linhas; l++) {
-            for (let c = 0; c < colunas; c++) {
-                const bloco = document.createElement('div');
-                bloco.classList.add('bloco');
-                bloco.style.position = 'absolute';
-                bloco.style.left = inicioX + c * (blocoLargura + espacamento) + 'px';
-                bloco.style.top = inicioY + l * (blocoAltura + espacamento) + 'px';
-                bloco.style.width = blocoLargura + 'px';
-                bloco.style.height = blocoAltura + 'px';
-                bloco.style.bordercolor = ['#ffffff'];
-                bloco.style.backgroundColor = ['#fffff'][l % 3];
-                board.appendChild(bloco);
-                blocos.push(bloco);
-            }
+        criarBlocos();
+        
+
+        function criarBlocos() {
+    blocos.length = 0; // limpa lista
+    const linhas = 3;
+    const colunas = 9;
+    const blocoLargura = 75;
+    const blocoAltura = 50;
+    const espacamento = 5;
+
+    const larguraTotal = colunas * blocoLargura + (colunas - 1) * espacamento;
+    const inicioX = (board.clientWidth - larguraTotal) / 2;
+    const inicioY = 25;
+
+    for (let l = 0; l < linhas; l++) {
+        for (let c = 0; c < colunas; c++) {
+            const bloco = document.createElement('div');
+            bloco.classList.add('bloco');
+            bloco.style.position = 'absolute';
+            bloco.style.left = inicioX + c * (blocoLargura + espacamento) + 'px';
+            bloco.style.top = inicioY + l * (blocoAltura + espacamento) + 'px';
+            bloco.style.width = blocoLargura + 'px';
+            bloco.style.height = blocoAltura + 'px';
+            bloco.style.backgroundColor = ['#fffff'][l % 3];
+            board.appendChild(bloco);
+            blocos.push(bloco);
         }
+    }
+}
+
         let teclaEsquerda = false;
         let teclaDireita = false;
         const velocidadeBarra = 6;
+
 
         // Controle
         document.addEventListener('keydown', (e) => {
@@ -147,19 +169,28 @@
                     break;
                 }
             }
-
-            // bola caiu -> jogador perde
+            // Verifica se todos os blocos foram destruídos
+if (blocos.every(b => b === null)) {
+    velocidadeX *= 1.1; // opcional: aumenta dificuldade
+    velocidadeY *= 1.1;
+    criarBlocos(); // cria nova rodada de blocos
+}
+                       // bola caiu -> jogador perde
             if (bolaY > board.clientHeight - 1) {
+                jogoAtivo = false; // para o loop
+                cancelAnimationFrame(animacao); // cancela a animação
                 document.getElementById("game-over-popup").style.display = "flex";
                 document.getElementById("popup-message").textContent = `O ${boardId} perdeu!`;
-            }
+          }
 
 
             bola.style.left = bolaX + 'px';
             bola.style.top = bolaY + 'px';
 
 
-            requestAnimationFrame(atualizar);
+            if (jogoAtivo) {
+                animacao = requestAnimationFrame(atualizar);
+        }
         }
 
         atualizar();
